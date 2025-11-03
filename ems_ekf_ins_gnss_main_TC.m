@@ -672,5 +672,8 @@ fprintf('Roll error(deg) = %.10f\n', sqrt(mean((roll_ref_vector-Euler_roll_value
 fprintf('Pitch error(deg) = %.10f\n', sqrt(mean((pitch_ref_vector-Euler_pitch_value).^2))*R2D);
 fprintf('Heading error(deg) = %.10f\n', sqrt(mean((heading_ref_vector-Euler_heading_value).^2))*R2D);
 
-%--> Display results figures
+%--> Display results figures & Save to KML File
+kml_filename = fullfile(pwd,'ekf_solution.kml');
+write_kml_from_lla(kml_filename, lat_value, lon_value, alt_value);
+fprintf('EKF LLA saved to %s\n', kml_filename);
 display_results
