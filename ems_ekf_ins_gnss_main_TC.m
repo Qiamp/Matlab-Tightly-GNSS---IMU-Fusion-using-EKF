@@ -674,6 +674,6 @@ fprintf('Heading error(deg) = %.10f\n', sqrt(mean((heading_ref_vector-Euler_head
 
 %--> Display results figures & Save to KML File
 kml_filename = fullfile(pwd,'ekf_solution.kml');
-write_kml_from_lla(kml_filename, lat_value, lon_value, alt_value);
+write_kml_from_lla(kml_filename, lat_value, lon_value, alt_value, ems_data.lat*R2D, ems_data.lon*R2D, ems_data.h);
 fprintf('EKF LLA saved to %s\n', kml_filename);
 display_results
