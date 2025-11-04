@@ -1,25 +1,3 @@
-%   3D Cube Drawing module
-% 
-%   This is a basic INS/GNSS Tighly-Coupled system using EKF. This is only 
-%   a DEMO with basic updates (range measurements) are applied. More advanced
-%   updates such as range rate measurements, nonholonomic constraints, 
-%   zero-speed, and adaptive EKF are NOT implemented in this DEMO. The purpose
-%   of the DEMO is to demonstrate the basics of EKF in a basic INS/GNSS 
-%   Tightly-Coupled fusion scenario. 
-% 
-%   For commercial use or embdded C/C++ versions, please contact mohamed.atia@carleton.ca.
-% 
-%   Copyright (C) 2019, Mohamed Atia, all rights reserved.
-%   The software is given under GNU Lesser General Public License
-%   This program is distributed in the hope that it will be useful,
-%   but WITHOUT ANY WARRANTY; without even the implied warranty of
-%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%   GNU Lesser General Public License for more details.
-%
-%   You should have received a copy of the GNU Lesser General Public
-%   License along with this program. If not, see
-%   <http://www.gnu.org/licenses/>.
-
 function [ CubeXData , CubeYData , CubeZData ] = get_cube_axis_data( ver )
 CubeXData = [[ver(1,1);ver(2,1);ver(3,1);ver(4,1)] [ver(4,1);ver(3,1);ver(5,1);ver(6,1)]...
     [ver(6,1);ver(7,1);ver(8,1);ver(5,1)] [ver(1,1);ver(2,1);ver(8,1);ver(7,1)]...

@@ -1,16 +1,3 @@
-%{
-Imu Gps Fusion Project
-
-Copyright (c) 2024 Mohamed Atia
-
-This software is licensed under the Academic Use License.
-Permission is granted for academic, educational, and non-commercial purposes only.
-For more details, refer to the LICENSE file in the root directory of this repository.
-
-DISCLAIMER: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
-See LICENSE for details.
-%}
-
 set(0,'DefaultFigureWindowStyle','docked');
 clear;
 close all;
@@ -357,6 +344,10 @@ for index = 1:length(ems_data.time)-1
     lat = lat_value(index)*D2R;
     lon = lon_value(index)*D2R;
 
+    % 调用 forward_kinematics 函数，利用校正后的加速度和角速度更新位置、速度、姿态和经纬度
+    % 通过惯性导航方程预测下一时刻的状态
+    % 状态预测结果
+    % X_k|k-1
     [r,v,q,lat,lon] = forward_kinematics(acc,gyr,r,v,q,lat0,lon0,lat,lon,sampling_period_sec);
 
     EP_value(index+1) = r(1);
@@ -406,6 +397,7 @@ for index = 1:length(ems_data.time)-1
     receiver_clk_drift_value(index+1) = receiver_clk_drift_value(index);
     
     %--> Kalman Filter model matrices calculation
+    % F_value 是状态转移矩阵
     F_value = F_fun(Rm_value(index),Rn_value(index),raw_acc_x(index),raw_acc_y(index),raw_acc_z(index),...
                     acc_sf_x_value(index),acc_sf_y_value(index),acc_sf_z_value(index),...
                     acc_bias_x_value(index),acc_bias_y_value(index),acc_bias_z_value(index),...
@@ -425,6 +417,9 @@ for index = 1:length(ems_data.time)-1
         disp('imaginary transition matrix');return;
     end
     
+    % 功能：将连续时间的状态转移矩阵 F 离散化，得到离散时间的状态转移矩阵 Phi。
+    % 公式：Phi = I + F * Δt，其中 Δt 是采样周期。
+    % 目的：适配离散时间的卡尔曼滤波器。
     Phi = eye(size(F_value)) + F_value*sampling_period_sec;
     
     G_value = G_fun(acc_rw_stdv_x_value(index),acc_rw_stdv_y_value(index),acc_rw_stdv_z_value(index),...
@@ -445,9 +440,12 @@ for index = 1:length(ems_data.time)-1
         disp('imaginary noise shaping matrix');return;
     end
     
+    % 计算离散时间的过程噪声协方差矩阵
     Qd = sampling_period_sec^2*(G_value*G_value');
     
     %--> Advance state error covariance matrix
+    % Covariance预测结果
+    % P_k|k-1
     P = Phi*P*Phi' + Qd;
     
     if (~isreal(P))
@@ -455,12 +453,17 @@ for index = 1:length(ems_data.time)-1
     end
     
     %--> Apply updates from obervations
-    if (mod(index,sampling_freq) == 0 && ~(ems_data.time(index) > 140 && ems_data.time(index) < 160))
+    % 每隔 sampling_freq 次采样进行一次观测更新
+    if (mod(index,sampling_freq) == 0 && ~(ems_data.time(index) > 140 && ems_data.time(index) < 160)) % 跳过时间范围 140s 到 160s 的数据
         %--> Initialize error vector and matrices
+        % z = []; % 观测误差（创新序列）。
+        % H = []; % 测量矩阵的雅可比矩阵。
+        % R = []; % 测量噪声协方差矩阵。
         clear z H R;
         
         no_of_sats = ems_data.no_of_sat{((index)/sampling_freq)+1};        
         
+        % 在特定时间段内，强制将可见卫星数量设置为 1，并调整相关的卫星数据。
         if (ems_data.time(index) > 140 && ems_data.time(index) < 160)
             no_of_sats = 1;
             ems_data.no_of_sat{((index)/sampling_freq)+1} = 1;
@@ -476,11 +479,15 @@ for index = 1:length(ems_data.time)-1
         end
 
         %--> Convert reciever position from Geodetic frame to ECEF frame
+        % LLA -> ECEF
         x = (Rn_value(index+1) + alt_value(index+1))*cos(lat_value(index+1)*D2R)*cos(lon_value(index+1)*D2R);
         y = (Rn_value(index+1) + alt_value(index+1))*cos(lat_value(index+1)*D2R)*sin(lon_value(index+1)*D2R);
         z = ((Rn_value(index+1)*(1-earth_e2))+alt_value(index+1))*sin(lat_value(index+1)*D2R);        
         
         %--> Set the innovation sequence
+        % range_from_INS：INS 预测的接收机到卫星的距离。
+        % range_from_GNSS：GNSS 测量的接收机到卫星的距离。
+        % z：创新序列，表示 GNSS 测量与 INS 预测之间的差异。
         deltaPx = (x.*ones(no_of_sats,1)) - (ems_data.sat_Px{((index)/sampling_freq)+1});
         deltaPy = (y.*ones(no_of_sats,1)) - (ems_data.sat_Py{((index)/sampling_freq)+1});
         deltaPz = (z.*ones(no_of_sats,1)) - (ems_data.sat_Pz{((index)/sampling_freq)+1});
@@ -491,8 +498,9 @@ for index = 1:length(ems_data.time)-1
         z = range_from_GNSS - range_from_INS;
         
         %--> Set the measurment matrix jacobian
+        % H：测量模型雅可比
         H = zeros(no_of_sats, 23);
-        
+        % 计算填充测量矩阵 H 的每一行
         for m=1:no_of_sats
             H(m,:) = H_row_range_fun(Rm_value(index+1),Rn_value(index+1),alt_value(index+1),...
                                     (lon_value(index+1)*D2R - ems_data.lon(1))*(Rn_value(index+1)+alt_value(index+1))*cos(lat_value(index+1)*D2R)+ems_data.east(1),...
@@ -501,6 +509,7 @@ for index = 1:length(ems_data.time)-1
         end
         
         %--> Adjust measurment noise matrix
+        % R：测量噪声协方差
         R = diag(ones(1*no_of_sats,1));   
         
         range_error_std = parameters(56);
