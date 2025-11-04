@@ -454,7 +454,7 @@ for index = 1:length(ems_data.time)-1
     
     %--> Apply updates from obervations
     % 每隔 sampling_freq 次采样进行一次观测更新
-    if (mod(index,sampling_freq) == 0 && ~(ems_data.time(index) > 140 && ems_data.time(index) < 160)) % 跳过时间范围 140s 到 160s 的数据
+    if (mod(index,sampling_freq) == 0 )
         %--> Initialize error vector and matrices
         % z = []; % 观测误差（创新序列）。
         % H = []; % 测量矩阵的雅可比矩阵。
@@ -464,19 +464,19 @@ for index = 1:length(ems_data.time)-1
         no_of_sats = ems_data.no_of_sat{((index)/sampling_freq)+1};        
         
         % 在特定时间段内，强制将可见卫星数量设置为 1，并调整相关的卫星数据。
-        if (ems_data.time(index) > 140 && ems_data.time(index) < 160)
-            no_of_sats = 1;
-            ems_data.no_of_sat{((index)/sampling_freq)+1} = 1;
-            sat_Px = ems_data.sat_Px{((index)/sampling_freq)+1};
-            sat_Py = ems_data.sat_Py{((index)/sampling_freq)+1};
-            sat_Pz = ems_data.sat_Pz{((index)/sampling_freq)+1};
-            sat_range = ems_data.sat_range{((index)/sampling_freq)+1};
-            ems_data.sat_Px{((index)/sampling_freq)+1} = sat_Px(1:no_of_sats);
-            ems_data.sat_Py{((index)/sampling_freq)+1} = sat_Py(1:no_of_sats);
-            ems_data.sat_Pz{((index)/sampling_freq)+1} = sat_Pz(1:no_of_sats);
-            ems_data.sat_range{((index)/sampling_freq)+1} = sat_range(1:no_of_sats);
-            ems_data.no_of_sat{((index)/sampling_freq)+1} = no_of_sats;
-        end
+        % if (ems_data.time(index) > 140 && ems_data.time(index) < 160)
+        %     no_of_sats = 1;
+        %     ems_data.no_of_sat{((index)/sampling_freq)+1} = 1;
+        %     sat_Px = ems_data.sat_Px{((index)/sampling_freq)+1};
+        %     sat_Py = ems_data.sat_Py{((index)/sampling_freq)+1};
+        %     sat_Pz = ems_data.sat_Pz{((index)/sampling_freq)+1};
+        %     sat_range = ems_data.sat_range{((index)/sampling_freq)+1};
+        %     ems_data.sat_Px{((index)/sampling_freq)+1} = sat_Px(1:no_of_sats);
+        %     ems_data.sat_Py{((index)/sampling_freq)+1} = sat_Py(1:no_of_sats);
+        %     ems_data.sat_Pz{((index)/sampling_freq)+1} = sat_Pz(1:no_of_sats);
+        %     ems_data.sat_range{((index)/sampling_freq)+1} = sat_range(1:no_of_sats);
+        %     ems_data.no_of_sat{((index)/sampling_freq)+1} = no_of_sats;
+        % end
 
         %--> Convert reciever position from Geodetic frame to ECEF frame
         % LLA -> ECEF
@@ -682,7 +682,31 @@ fprintf('Pitch error(deg) = %.10f\n', sqrt(mean((pitch_ref_vector-Euler_pitch_va
 fprintf('Heading error(deg) = %.10f\n', sqrt(mean((heading_ref_vector-Euler_heading_value).^2))*R2D);
 
 %--> Display results figures & Save to KML File
+lat_noisy = zeros(length(ems_data.east_noisy), 1);
+lon_noisy = zeros(length(ems_data.east_noisy), 1);
+alt_noisy = zeros(length(ems_data.east_noisy), 1);
+
+for idx = 1:length(ems_data.east_noisy)
+    % 计算当前参考点的 Rn
+    Rn_ref = earth_a/sqrt(1-earth_e2*sin(lat0)*sin(lat0));
+    Rm_ref = earth_a*(1-earth_e2)/((1-earth_e2*sin(lat0)*sin(lat0))^(1.5));
+    
+    % ENU 转 LLA (简化方法,适用于小范围)
+    delta_lat = ems_data.north_noisy(idx) / (Rm_ref + ems_data.h_noisy(idx));
+    delta_lon = ems_data.east_noisy(idx) / ((Rn_ref + ems_data.h_noisy(idx)) * cos(lat0));
+    
+    lat_noisy(idx) = (lat0 + delta_lat) * R2D;
+    lon_noisy(idx) = (lon0 + delta_lon) * R2D;
+    alt_noisy(idx) = ems_data.h_noisy(idx);
+end
+
+% Ground Truth 数据转换为度
+lat_truth = ems_data.lat * R2D;
+lon_truth = ems_data.lon * R2D;
+alt_truth = ems_data.h;
+
 kml_filename = fullfile(pwd,'ekf_solution.kml');
-write_kml_from_lla(kml_filename, lat_value, lon_value, alt_value, ems_data.lat*R2D, ems_data.lon*R2D, ems_data.h);
-fprintf('EKF LLA saved to %s\n', kml_filename);
+write_kml_from_lla(kml_filename, lat_value, lon_value, alt_value, lat_noisy, lon_noisy, alt_noisy, lat_truth, lon_truth, alt_truth);
+fprintf('EKF LLA, Noisy GPS and Ground Truth saved to %s\n', kml_filename);
+
 display_results
