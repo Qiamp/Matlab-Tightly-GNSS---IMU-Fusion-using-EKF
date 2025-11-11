@@ -38,7 +38,7 @@ function write_kml_from_lla(filename, ekf_lat_deg, ekf_lon_deg, ekf_alt_m, gnss_
     % EKF 轨迹 (红色)
     fprintf(fid,'<Placemark>\n<name>EKF Solution</name>\n');
     fprintf(fid,'<Style><LineStyle><color>ff0000ff</color><width>2.5</width></LineStyle></Style>\n');
-    fprintf(fid,'<LineString>\n<tessellate>1</tessellate>\n<altitudeMode>absolute</altitudeMode>\n<coordinates>\n');
+    fprintf(fid,'<LineString>\n<tessellate>1</tessellate>\n<altitudeMode>clampToGround</altitudeMode>\n<coordinates>\n');
     for i = 1:numel(ekf_lat_deg)
         fprintf(fid,'%.10f,%.10f,%.3f\n', ekf_lon_deg(i), ekf_lat_deg(i), ekf_alt_m(i));
     end
@@ -47,7 +47,7 @@ function write_kml_from_lla(filename, ekf_lat_deg, ekf_lon_deg, ekf_alt_m, gnss_
     % Raw GNSS trajectory (green)
     fprintf(fid,'<Placemark>\n<name>GNSS Measurements</name>\n');
     fprintf(fid,'<Style><LineStyle><color>ff00ff00</color><width>1.5</width></LineStyle></Style>\n');
-    fprintf(fid,'<LineString>\n<tessellate>1</tessellate>\n<altitudeMode>absolute</altitudeMode>\n<coordinates>\n');
+    fprintf(fid,'<LineString>\n<tessellate>1</tessellate>\n<altitudeMode>clampToGround</altitudeMode>\n<coordinates>\n');
     for i = 1:numel(gnss_lat_deg)
         fprintf(fid,'%.10f,%.10f,%.3f\n', gnss_lon_deg(i), gnss_lat_deg(i), gnss_alt_m(i));
     end
@@ -56,7 +56,7 @@ function write_kml_from_lla(filename, ekf_lat_deg, ekf_lon_deg, ekf_alt_m, gnss_
     % Ground Truth 轨迹 (蓝色)
     fprintf(fid,'<Placemark>\n<name>Ground Truth</name>\n');
     fprintf(fid,'<Style><LineStyle><color>ffff0000</color><width>2.5</width></LineStyle></Style>\n');
-    fprintf(fid,'<LineString>\n<tessellate>1</tessellate>\n<altitudeMode>absolute</altitudeMode>\n<coordinates>\n');
+    fprintf(fid,'<LineString>\n<tessellate>1</tessellate>\n<altitudeMode>clampToGround</altitudeMode>\n<coordinates>\n');
     for i = 1:numel(truth_lat_deg)
         fprintf(fid,'%.10f,%.10f,%.3f\n', truth_lon_deg(i), truth_lat_deg(i), truth_alt_m(i));
     end
