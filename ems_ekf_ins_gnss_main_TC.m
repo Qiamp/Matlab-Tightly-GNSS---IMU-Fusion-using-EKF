@@ -487,7 +487,6 @@ for index = 1:length(ems_data.time)-1
         %--> Set the innovation sequence
         % range_from_INS：INS 预测的接收机到卫星的距离。
         % range_from_GNSS：GNSS 测量的接收机到卫星的距离。
-        % z：创新序列，表示 GNSS 测量与 INS 预测之间的差异。
         deltaPx = (x.*ones(no_of_sats,1)) - (ems_data.sat_Px{((index)/sampling_freq)+1});
         deltaPy = (y.*ones(no_of_sats,1)) - (ems_data.sat_Py{((index)/sampling_freq)+1});
         deltaPz = (z.*ones(no_of_sats,1)) - (ems_data.sat_Pz{((index)/sampling_freq)+1});
@@ -495,6 +494,7 @@ for index = 1:length(ems_data.time)-1
         range_from_INS = sqrt(deltaPx.^2+deltaPy.^2+deltaPz.^2);      
         range_from_GNSS = cell2mat(ems_data.sat_range(((index)/sampling_freq)+1)) + (ems_data.noiseInfo.clk_bias - receiver_clk_bias_value(index+1)).*ones(no_of_sats,1);
         
+         % z：创新序列，表示 GNSS 测量与 INS 预测之间的差异。
         z = range_from_GNSS - range_from_INS;
         
         %--> Set the measurment matrix jacobian
