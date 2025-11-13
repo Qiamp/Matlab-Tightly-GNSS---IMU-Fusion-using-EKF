@@ -204,7 +204,7 @@
                     <span>Main Processing Loop (Each IMU Sample)</span>
                 </div>
                 <div class="loop-indicator">
-                    🔄 FOR index = 1 : num_of_samples-1
+                    🔄 IMU Prediction Loop
                 </div>
 
                 <!-- Step 2.1: Prediction -->
@@ -270,7 +270,7 @@
                 <!-- Step 2.2: Update -->
                 <div style="background: #d4edda; border: 2px solid #155724; padding: 15px; border-radius: 8px; margin: 15px 0;">
                     <div style="font-weight: bold; color: #155724; margin-bottom: 10px;">
-                        ✅ Conditional Check: Execute GNSS update every 1 second (mod(index, sampling_freq) == 0)
+                        ✅ GNSS Update Phase (Every 100 IMU Samples)
                     </div>
                     
                     <div class="module-grid">
