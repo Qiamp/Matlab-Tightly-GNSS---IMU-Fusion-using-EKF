@@ -1,0 +1,425 @@
+<!DOCTYPE html><html><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .phase {
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .phase-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .phase-number {
+            background: #3498db;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .module {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .module:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .module-title {
+            font-weight: bold;
+            color: #c0392b;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        .module-desc {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+        }
+        .code-ref {
+            background: #ecf0f1;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #16a085;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .arrow {
+            text-align: center;
+            font-size: 30px;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .state-vector {
+            background: #fff3cd;
+            border: 2px dashed #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .state-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        .state-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+            font-size: 12px;
+        }
+        .state-item {
+            background: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .loop-indicator {
+            background: #d1ecf1;
+            border: 2px solid #0c5460;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            color: #0c5460;
+            margin: 15px 0;
+        }
+    </style>
+<script src="https://puc.poecdn.net/authenticated_preview_page/syncedState.3f7572448765332f3047.js"></script></head>
+<body>
+    <div class="container">
+        <h1>🛰️ INS/GNSS Tightly-Coupled Navigation System Framework</h1>
+        <div class="subtitle">Extended Kalman Filter for Integrated Navigation</div>
+        
+        <div class="flow-container">
+            <!-- Phase 1: Initialization -->
+            <div class="phase">
+                <div class="phase-title">
+                    <div class="phase-number">1</div>
+                    <span>System Initialization Phase</span>
+                </div>
+                <div class="module-grid">
+                    <div class="module">
+                        <div class="module-title">📊 Symbolic Modeling Engine</div>
+                        <div class="module-desc">
+                            Define symbolic derivations for navigation state equations including attitude quaternions, position, velocity, and IMU error models
+                            <div class="code-ref">ems_symbolic_engine_TC.m</div>
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-title">⚙️ Parameter Loading</div>
+                        <div class="module-desc">
+                            Load EKF parameters (noise standard deviations, time constants, initial covariances) and sensor data
+                            <div class="code-ref">load('EKF_parameters')</div>
+                            <div class="code-ref">load('ems_data_TC')</div>
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-title">🎯 State Initialization</div>
+                        <div class="module-desc">
+                            Initialize 23-dimensional state vector, covariance matrix P, earth parameters, sensor biases and scale factors
+                            <div class="code-ref">Initial attitude, position, velocity</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="state-vector">
+                    <div class="state-title">📋 State Vector (23 Dimensions)</div>
+                    <div class="state-items">
+                        <div class="state-item">🗺️ East Position (east_pos)</div>
+                        <div class="state-item">🗺️ North Position (north_pos)</div>
+                        <div class="state-item">🗺️ Altitude (alt)</div>
+                        <div class="state-item">🚀 East Velocity (ve)</div>
+                        <div class="state-item">🚀 North Velocity (vn)</div>
+                        <div class="state-item">🚀 Up Velocity (vu)</div>
+                        <div class="state-item">🧭 Attitude Quaternion (b,c,d)</div>
+                        <div class="state-item">⚙️ Gyro Bias (3-axis)</div>
+                        <div class="state-item">⚙️ Accel Bias (3-axis)</div>
+                        <div class="state-item">⚙️ Gyro Scale Factor (3-axis)</div>
+                        <div class="state-item">⚙️ Accel Scale Factor (3-axis)</div>
+                        <div class="state-item">🕐 Receiver Clock Bias</div>
+                        <div class="state-item">🕐 Receiver Clock Drift</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">⬇️</div>
+
+            <!-- Phase 2: Main Loop -->
+            <div class="phase">
+                <div class="phase-title">
+                    <div class="phase-number">2</div>
+                    <span>Main Processing Loop (Each IMU Sample)</span>
+                </div>
+                <div class="loop-indicator">
+                    🔄 FOR index = 1 : num_of_samples-1
+                </div>
+
+                <!-- Step 2.1: Prediction -->
+                <div class="module-grid">
+                    <div class="module">
+                        <div class="module-title">📥 IMU Data Acquisition</div>
+                        <div class="module-desc">
+                            Read raw accelerometer and gyroscope measurements
+                            <div class="code-ref">raw_acc_x/y/z, raw_gyro_x/y/z</div>
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-title">🔧 IMU Error Compensation</div>
+                        <div class="module-desc">
+                            Correct IMU measurements using current estimates of biases and scale factors
+                            <div class="code-ref">acc = (raw - bias)/(1+sf)</div>
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-title">🧮 Forward Kinematics</div>
+                        <div class="module-desc">
+                            Predict position, velocity, and attitude using corrected IMU data through inertial navigation equations
+                            <div class="code-ref">forward_kinematics.m</div>
+                            <div class="module-desc" style="margin-top: 8px; font-size: 11px;">
+                                • Attitude update: Quaternion differential equation<br>
+                                • Velocity update: Specific force equation + Coriolis effect<br>
+                                • Position update: Geodetic differential equations
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="arrow">⬇️</div>
+
+                <div class="module-grid">
+                    <div class="module">
+                        <div class="module-title">📐 Jacobian Calculation</div>
+                        <div class="module-desc">
+                            Compute Jacobian of state transition matrix F (23×23)
+                            <div class="code-ref">F_fun(...) → F_value</div>
+                            <div class="code-ref">Discretization: Φ = I + F·Δt</div>
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-title">🎲 Process Noise Matrix</div>
+                        <div class="module-desc">
+                            Calculate noise shaping matrix G and discrete process noise covariance Qd
+                            <div class="code-ref">G_fun(...) → G_value</div>
+                            <div class="code-ref">Qd = Δt²·G·Gᵀ</div>
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-title">📊 Covariance Prediction</div>
+                        <div class="module-desc">
+                            Predict state error covariance matrix
+                            <div class="code-ref">P = Φ·P·Φᵀ + Qd</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="arrow">⬇️</div>
+
+                <!-- Step 2.2: Update -->
+                <div style="background: #d4edda; border: 2px solid #155724; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <div style="font-weight: bold; color: #155724; margin-bottom: 10px;">
+                        ✅ Conditional Check: Execute GNSS update every 1 second (mod(index, sampling_freq) == 0)
+                    </div>
+                    
+                    <div class="module-grid">
+                        <div class="module">
+                            <div class="module-title">🛰️ GNSS Data Processing</div>
+                            <div class="module-desc">
+                                Retrieve number of visible satellites, satellite positions, and pseudorange measurements
+                                <div class="code-ref">no_of_sats, sat_Px/Py/Pz, sat_range</div>
+                            </div>
+                        </div>
+                        <div class="module">
+                            <div class="module-title">🌍 Coordinate Transformation</div>
+                            <div class="module-desc">
+                                Convert INS-predicted geodetic coordinates (LLA) to ECEF coordinates
+                                <div class="code-ref">(lat,lon,alt) → (x,y,z)</div>
+                            </div>
+                        </div>
+                        <div class="module">
+                            <div class="module-title">📏 Innovation Sequence</div>
+                            <div class="module-desc">
+                                Calculate pseudorange residuals: GNSS measurement - INS prediction
+                                <div class="code-ref">z = range_GNSS - range_INS</div>
+                            </div>
+                        </div>
+                        <div class="module">
+                            <div class="module-title">🔬 Measurement Matrix</div>
+                            <div class="module-desc">
+                                Compute Jacobian of pseudorange measurements w.r.t. states H (n_sats × 23)
+                                <div class="code-ref">H_row_range_fun(...)</div>
+                            </div>
+                        </div>
+                        <div class="module">
+                            <div class="module-title">📊 Kalman Gain</div>
+                            <div class="module-desc">
+                                Calculate optimal gain matrix
+                                <div class="code-ref">K = P·Hᵀ·(H·P·Hᵀ + R)⁻¹</div>
+                            </div>
+                        </div>
+                        <div class="module">
+                            <div class="module-title">🎯 State Update</div>
+                            <div class="module-desc">
+                                State correction and covariance update
+                                <div class="code-ref">δx = K·z</div>
+                                <div class="code-ref">P = P - K·H·P</div>
+                            </div>
+                        </div>
+                        <div class="module">
+                            <div class="module-title">✨ State Correction</div>
+                            <div class="module-desc">
+                                Apply correction vector to update all states, normalize quaternions
+                                <div class="code-ref">correct_states_TC.m</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">⬇️</div>
+
+            <!-- Phase 3: Output -->
+            <div class="phase">
+                <div class="phase-title">
+                    <div class="phase-number">3</div>
+                    <span>Results Output and Visualization</span>
+                </div>
+                <div class="module-grid">
+                    <div class="module">
+                        <div class="module-title">🎬 3D Animation Display</div>
+                        <div class="module-desc">
+                            Real-time display of 3D aircraft model, ground truth trajectory, noisy measurements, and EKF solution
+                            <div class="code-ref">get_cube_axis_data.m</div>
+                            <div class="code-ref">patch + refreshdata</div>
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-title">📈 Error Statistics</div>
+                        <div class="module-desc">
+                            Compute and print RMSE for position, velocity, and attitude
+                            <div class="code-ref">fprintf RMS errors</div>
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-title">🗺️ KML File Generation</div>
+                            <div class="module-desc">
+                            Export EKF solution, noisy GPS measurements, and ground truth to Google Earth
+                            <div class="code-ref">write_kml_from_lla.m</div>
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-title">📊 Detailed Plots</div>
+                        <div class="module-desc">
+                            Generate multiple comparison plots: attitude, position, bias estimation, covariance, etc.
+                            <div class="code-ref">display_results.m</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Algorithm Highlights -->
+            <div class="phase" style="background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);">
+                <div class="phase-title" style="color: #d63031;">
+                    <div class="phase-number" style="background: #d63031;">💡</div>
+                    <span>Core Algorithm Highlights</span>
+                </div>
+                <div class="module-grid">
+                    <div class="module" style="border-left-color: #fdcb6e;">
+                        <div class="module-title" style="color: #d63031;">📐 Error-State EKF</div>
+                        <div class="module-desc">
+                            Uses error-state modeling to reduce nonlinearity and improve filter stability
+                        </div>
+                    </div>
+                    <div class="module" style="border-left-color: #fdcb6e;">
+                        <div class="module-title" style="color: #d63031;">🔄 Quaternion Attitude Representation</div>
+                        <div class="module-desc">
+                            Avoids Euler angle singularities using unit quaternion constraint (a² + b² + c² + d² = 1)
+                        </div>
+                    </div>
+                    <div class="module" style="border-left-color: #fdcb6e;">
+                        <div class="module-title" style="color: #d63031;">⚙️ Gauss-Markov Bias Model</div>
+                        <div class="module-desc">
+                            IMU biases and scale factors modeled as first-order Gauss-Markov processes
+                        </div>
+                    </div>
+                    <div class="module" style="border-left-color: #fdcb6e;">
+                        <div class="module-title" style="color: #d63031;">🌐 Multiple Coordinate Frame Transformations</div>
+                        <div class="module-desc">
+                            Involves ECEF, NED, Body, Local Level, and other coordinate frames
+                        </div>
+                    </div>
+                    <div class="module" style="border-left-color: #fdcb6e;">
+                        <div class="module-title" style="color: #d63031;">📡 Tightly-Coupled Architecture</div>
+                        <div class="module-desc">
+                            Uses raw pseudorange observations instead of GNSS position solution for improved robustness
+                        </div>
+                    </div>
+                    <div class="module" style="border-left-color: #fdcb6e;">
+                        <div class="module-title" style="color: #d63031;">🎯 Symbolic Automatic Differentiation</div>
+                        <div class="module-desc">
+                            Utilizes MATLAB Symbolic Toolbox to automatically derive Jacobian matrices
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #ecf0f1; border-radius: 10px; text-align: center; color: #2c3e50;">
+            <strong>Data Flow Summary:</strong> High-rate IMU prediction (100Hz) → Low-rate GNSS update (1Hz) → Fused high-precision navigation solution
+        </div>
+    </div>
+
+
+</body></html>
